@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Async Await</title>
+    <script>
+      function myFunction(callback) {
+        let btnElement = event.target;
+        btnElement.disabled = true;
+        btnElement.style = "cursor:not-allowed";
+        let divElement = document.querySelector("div");
+        divElement.style = "width:70vh;height:70vh";
+        let paraElement = document.createElement("p");
+        divElement.appendChild(paraElement);
+        let bodyElement = document.querySelector("body");
+        bodyElement.appendChild(divElement);
+        let tableElement = document.createElement("table");
+        let paraElement2 = document.createElement("p");
+        paraElement2.textContent = "Loading..."; // made loading as the data resolves
+        divElement.appendChild(paraElement2);
+        //calling the callback function
+        callback()
+          .then((result) => {
+            if (result) {
+              for (data of result.posts) {
+                let trElement = document.createElement("tr");
+                trElement.textContent = data.body;
+                tableElement.appendChild(trElement);
+              }
+              divElement.appendChild(tableElement);
+              paraElement2.remove();
+              let strongElement = document.createElement("strong");
+              strongElement.textContent = "Posts:";
+              strongElement.style = "font-size: x-large";
+              document.querySelector("p").innerHTML = "";
+              document.querySelector("p").appendChild(strongElement);
+            }
+          })
+          .catch((err) => (paraElement2.textContent = err));
+      }
+      //the function that is passed as an argument to another function named myFunction
+      async function callbackFunction() {
+        let response, result, timeout;
+        return new Promise(async (resolve, reject) => {
+          timeout = setTimeout(() => {
+            reject("Operation Time Out.");
+          }, 5000);
+          try {
+            response = await fetch("https://dummyjson.com/posts");
+            response ? clearTimeout(timeout) : "";
+            if (!response.ok) {
+              reject(
+                `Network response was not ok (status: ${response.status})`
+              );
+            }
+            result = await response.json();
+            result ? clearTimeout(timeout) : "";
+            resolve(result);
+          } catch (err) {
+            clearTimeout(timeout);
+            reject(err);
+          }
+        });
+      }
+    </script>
+    <style>
+      body {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        justify-content: center;
+        align-items: center;
+        background: #7f7ffa;
+      }
+      button {
+        cursor: pointer;
+        background: green;
+        color: white;
+        padding: 10px 20px;
+        transition: transform 0.3s ease-in-out;
+        border: none;
+        border-radius: 10px;
+      }
+      button:hover {
+        transform: scale(1.2);
+      }
+      div {
+        background: white;
+        padding-left: 20px;
+        overflow-y: scroll;
+      }
+      table tr:nth-child(odd) {
+        background-color: #e0e0e0;
+      }
+      table {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!--Onlick of the button myFunction will be called with callbackFunction passed with it.-->
+    <button onclick="myFunction(callbackFunction)">Click me!</button>
+    <div></div>
+  </body>
+</html>
