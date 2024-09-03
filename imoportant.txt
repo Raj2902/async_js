@@ -8,4 +8,4 @@ CONFUSED ON THAT.
 4) AS PER ASSIGNMENT RESPONSIVNESS CAN BE LEFT BEHIND.
 5) I HAVE USED INTERNAL CSS AND JS AS THE ASSIGNMENT WAS MORE FOCUSED ON CONCEPT THAN ON FILE STRUCTING
 6) GIT LINK : https://github.com/Raj2902/async_js
-7)Project live link : 
+7)Project live link : https://async-js-chi.vercel.app/
